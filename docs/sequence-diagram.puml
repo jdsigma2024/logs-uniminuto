@@ -1,0 +1,117 @@
+@startuml
+title Logs Uniminuto - Managament tasks (Sequence Diagram)
+
+actor Usuario as "User"
+participant "TaskController" as Controller #Lightgreen
+participant "TaskService" as Service #Lightblue
+participant "TaskRepository" as Repository #Lightblue
+database "Database" as DB #Lightyellow
+
+== Create Task ==
+
+Usuario -> Controller : POST /api/tasks (TaskRequest)
+activate Controller
+Controller -> Service : saveTask(taskRequest)
+activate Service
+Service -> Repository : save(task)
+activate Repository
+Repository -> DB : Insertar tarea
+activate DB
+DB --> Repository : Tarea insertada
+deactivate DB
+Repository --> Service : Tarea guardada
+deactivate Repository
+Service --> Controller : TaskResponse
+deactivate Service
+Controller --> Usuario : TaskResponse
+deactivate Controller
+
+== Get Task by ID ==
+
+Usuario -> Controller : GET /api/tasks/{id}
+activate Controller
+Controller -> Service : getTaskById(id)
+activate Service
+Service -> Repository : findById(id)
+activate Repository
+Repository -> DB : Buscar tarea por ID
+activate DB
+DB --> Repository : Tarea encontrada (o null)
+deactivate DB
+Repository --> Service : Optional<Task>
+deactivate Repository
+Service --> Controller : TaskResponse (o null)
+deactivate Service
+Controller --> Usuario : TaskResponse (o null)
+deactivate Controller
+
+== Get All Tasks ==
+
+Usuario -> Controller : GET /api/tasks
+activate Controller
+Controller -> Service : getAllTask()
+activate Service
+Service -> Repository : findAll()
+activate Repository
+Repository -> DB : Buscar todas las tareas
+activate DB
+DB --> Repository : Lista de tareas
+deactivate DB
+Repository --> Service : List<Task>
+deactivate Repository
+Service --> Controller : List<TaskResponse>
+deactivate Service
+Controller --> Usuario : List<TaskResponse>
+deactivate Controller
+
+== Update tasks ==
+
+Usuario -> Controller : PUT /api/tasks/{id} (TaskRequest)
+activate Controller
+Controller -> Service : updateTask(id, taskRequest)
+activate Service
+Service -> Repository : findById(id)
+activate Repository
+Repository -> DB : Buscar tarea por ID
+activate DB
+DB --> Repository : Tarea encontrada (o null)
+deactivate DB
+Repository --> Service : Optional<Task>
+deactivate Repository
+alt Tarea encontrada
+    Service -> Repository : save(updatedTask)
+    activate Repository
+    Repository -> DB : Actualizar tarea
+    activate DB
+    DB --> Repository : Tarea actualizada
+    deactivate DB
+    Repository --> Service : Tarea guardada
+    deactivate Repository
+    Service --> Controller : TaskResponse
+else Tarea no encontrada
+    Service --> Controller : null
+end
+deactivate Service
+Controller --> Usuario : TaskResponse (o null)
+deactivate Controller
+
+== Delete task ==
+
+Usuario -> Controller : DELETE /api/tasks/{id}
+activate Controller
+Controller -> Service : deleteTask(id)
+activate Service
+Service -> Repository : deleteById(id)
+activate Repository
+Repository -> DB : Eliminar tarea por ID
+activate DB
+DB --> Repository : Tarea eliminada
+deactivate DB
+Repository --> Service : deleted task
+deactivate Repository
+Service --> Controller: deleted task
+deactivate Service
+Controller --> Usuario : Deleted task succesufull
+deactivate Controller
+
+@enduml

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+    <Appenders>
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="Uniminuto - %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <File name="LogToFile" fileName="logs/logs-uniminuto.log">
+            <PatternLayout pattern="Uniminuto - %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.springframework.boot" level="error">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
+        <Logger name="edu.uniminuto.logs-uniminuto" level="debug">
+            <AppenderRef ref="LogToFile"/>
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="LogToFile"/>
+            <AppenderRef ref="LogToConsole"/>
+        </Root>
+    </Loggers>
+</Configuration>

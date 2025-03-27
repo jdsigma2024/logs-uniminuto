@@ -1,0 +1,102 @@
+@startuml
+title Logs Uniminuto - Managament tasks (Classes Diagram)
+
+
+class Task {
+    -id: Long
+    -title: String
+    -description: String
+    -dueDate: Date
+    -completed: Boolean
+    +getId(): Long
+    +getTitle(): String
+    +getDescription(): String
+    +getDueDate(): Date
+    +isCompleted(): Boolean
+    +setTitle(title: String): void
+    +setDescription(description: String): void
+    +setDueDate(dueDate: Date): void
+    +setCompleted(completed: Boolean): void
+}
+
+class TaskRequest {
+    -title: String
+    -description: String
+    -dueDate: Date
+    -completed: Boolean
+    +getTitle(): String
+    +getDescription(): String
+    +getDueDate(): Date
+    +isCompleted(): Boolean
+    +setTitle(title: String): void
+    +setDescription(description: String): void
+    +setDueDate(dueDate: Date): void
+    +setCompleted(completed: Boolean): void
+}
+
+class TaskResponse {
+    -id: Long
+    -title: String
+    -description: String
+    -dueDate: Date
+    -completed: Boolean
+    +getId(): Long
+    +getTitle(): String
+    +getDescription(): String
+    +getDueDate(): Date
+    +isCompleted(): Boolean
+    +setId(id: Long): void
+    +setTitle(title: String): void
+    +setDescription(description: String): void
+    +setDueDate(dueDate: Date): void
+    +setCompleted(completed: Boolean): void
+}
+
+interface TaskRepository {
+    +findById(id: Long): Optional<Task>
+    +findAll(): List<Task>
+    +save(task: Task): Task
+    +deleteById(id: Long): void
+}
+
+class TaskService {
+    -taskRepository: TaskRepository
+    +getTaskById(id: Long): TaskResponse
+    +getAllTask(): List<Task>
+    +saveTask(taskRequest: TaskRequest): TaskResponse
+    +updateTask(id: Long, taskRequest: TaskRequest): TaskResponse
+    +deleteTask(id: Long): void
+}
+
+class TaskController {
+    -service: TaskService
+    +getTaskById(id: Long): TaskResponse
+    +getAllTask(): List<TaskResponse>
+    +saveTask(taskRequest: TaskRequest): TaskResponse
+    +updateTask(id: Long, taskRequest: TaskRequest): TaskResponse
+    +deleteTask(id: Long): void
+}
+
+class TaskMapper {
+    +INSTANCE: TaskMapper
+    +taskRequestToTask(taskRequest: TaskRequest): Task
+    +taskToTaskResponse(task: Task): TaskResponse
+    +updateTaskFromTaskRequest(taskRequest: TaskRequest, task: Task): void
+}
+
+' Relaciones entre las clases
+
+TaskService *-- TaskRepository
+TaskController *-- TaskService
+TaskService --> Task
+TaskMapper ..> Task
+TaskMapper ..> TaskRequest
+TaskMapper ..> TaskResponse
+
+' Opcional:  Agregar estereotipos para mayor claridad
+TaskRepository <<interface>>
+TaskService <<service>>
+TaskController <<controller>>
+TaskMapper <<mapper>>
+
+@enduml
